@@ -1,6 +1,12 @@
-FROM docker/compose:1.12.0
+FROM alpine:3.6
 
-RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/community >> /etc/apk/repositories && \
-    apk update && \
-    apk upgrade && \
-    apk add --no-cache bash git openssh curl 'docker=17.05.0-r0'
+ARG COMPOSE_VERSION=1.17.1
+ARG DOCKER_VERSION=17.10.0-r0
+
+RUN echo 'http://dl-cdn.alpinelinux.org/alpine/edge/community' >> /etc/apk/repositories \
+ && apk add --update --no-cache python py-pip bash git openssh curl "docker=$DOCKER_VERSION" \
+ && pip install --no-cache-dir docker-compose==$COMPOSE_VERSION \
+ && rm -rf /var/cache/apk/*
+
+WORKDIR /data
+VOLUME /data
